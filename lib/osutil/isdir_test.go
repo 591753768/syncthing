@@ -44,13 +44,15 @@ func TestIsDir(t *testing.T) {
 		{"a/b", true},
 		{"a/b/c", true},
 		// Don't exist
-		{"x", false},
-		{"a/x", false},
-		{"a/b/x", false},
-		{"a/x/c", false},
+		{"x", true},
+		{"a/x", true},
+		{"a/b/x", true},
+		{"a/x/c", true},
 		// Symlink or behind symlink
 		{"a/l", false},
 		{"a/l/c", false},
+		// Behind a symlink but does not exist
+		{"a/l/d", false},
 	}
 
 	for _, tc := range cases {
