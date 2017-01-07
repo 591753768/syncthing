@@ -14,13 +14,14 @@ import (
 
 // IsDir returns true if base and every path component of name up to and
 // including filepath.Join(base, name) is a directory (and not a symlink or
-// similar). Base and name must both be clean and name must be relative to
+// similar), but returns true if the path is inaccessible,
+// Base and name must both be clean and name must be relative to
 // base.
 func IsDir(base, name string) bool {
 	path := base
 	info, err := Lstat(path)
 	if err != nil {
-		return false
+		return os.IsNotExist(err)
 	}
 	if !info.IsDir() {
 		return false
@@ -36,7 +37,7 @@ func IsDir(base, name string) bool {
 		path = filepath.Join(path, part)
 		info, err := Lstat(path)
 		if err != nil {
-			return false
+			return os.IsNotExist(err)
 		}
 		if info.Mode()&os.ModeSymlink != 0 {
 			return false
